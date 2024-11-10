@@ -18,7 +18,9 @@ namespace SingleResponsibilityPrinciple
 
         IEnumerable<string> ITradeDataProvider.GetTradeData()
         {
-            return Task.Run(() => _tradeDataProvider.GetTradeData()).Result;
+            var tradeData =  Task.Run(() => _tradeDataProvider.GetTradeData());
+            tradeData.Wait();
+            return tradeData.Result;
         }
     }
 }

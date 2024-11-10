@@ -20,7 +20,6 @@ namespace SingleResponsibilityPrinciple
                 Environment.Exit(1); // Exits the application with a non-zero exit code indicating an error
             }
             // data file to read from locally
-            //Stream tradeStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Unit9_Trader.trades.txt");
             
             // URL to read trade file from
             string tradeURL = "http://raw.githubusercontent.com/tgibbons-css/CIS3285_Unit9_F24/refs/heads/master/SingleResponsibilityPrinciple/trades.txt";
@@ -30,16 +29,15 @@ namespace SingleResponsibilityPrinciple
 
             ITradeValidator tradeValidator = new SimpleTradeValidator(logger);
 
-            //These are three different trade providers that read from different sources
-            ITradeDataProvider fileProvider = new StreamTradeDataProvider(tradeStream, logger);
-            //ITradeDataProvider urlProvider = new URLTradeDataProvider(tradeURL, logger);
-            //ITradeDataProvider restfulProvider = new RestfulTradeDataProvider(restfulURL, logger);
+            //PART 2 LEARNING ACTIVITY
+            ITradeDataProvider urlProvider = new URLTradeDataProvider(tradeURL, logger);
+            ITradeDataProvider urlAsyncProvider = new URLAsyncProvider(urlProvider);
 
             ITradeMapper tradeMapper = new SimpleTradeMapper();
             ITradeParser tradeParser = new SimpleTradeParser(tradeValidator, tradeMapper);
             ITradeStorage tradeStorage = new AdoNetTradeStorage(logger);
 
-            TradeProcessor tradeProcessor = new TradeProcessor(fileProvider, tradeParser, tradeStorage);
+            TradeProcessor tradeProcessor = new TradeProcessor(urlAsyncProvider, tradeParser, tradeStorage);
             //TradeProcessor tradeProcessor = new TradeProcessor(urlProvider, tradeParser, tradeStorage);
 
             tradeProcessor.ProcessTrades();
