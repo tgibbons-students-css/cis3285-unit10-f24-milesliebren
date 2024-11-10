@@ -40,7 +40,7 @@ namespace SingleResponsibilityPrinciple
             TradeProcessor tradeProcessor = new TradeProcessor(urlAsyncProvider, tradeParser, tradeStorage);
             //TradeProcessor tradeProcessor = new TradeProcessor(urlProvider, tradeParser, tradeStorage);
 
-            tradeProcessor.ProcessTrades();
+            tradeProcessor.ProcessTradesAsync();
 
             //Console.ReadKey();
 
