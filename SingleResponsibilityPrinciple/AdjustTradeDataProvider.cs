@@ -1,25 +1,23 @@
 ﻿using SingleResponsibilityPrinciple.Contracts;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SingleResponsibilityPrinciple
 {
     internal class AdjustTradeDataProvider : ITradeDataProvider
     {
-        private URLTradeDataProvider _tradeDataProvider;
+        private readonly ITradeDataProvider _tradeDataProvider;
 
-        public AdjustTradeDataProvider(URLTradeDataProvider uRLTradeDataProvider)
+        public AdjustTradeDataProvider(ITradeDataProvider tradeDataProvider)
         {
-            _tradeDataProvider = uRLTradeDataProvider;
+            _tradeDataProvider = tradeDataProvider;
         }
 
-        public IEnumerable<string> GetTradeData()
+        public async Task<IEnumerable<string>> GetTradeData()
         {
-            // Get the raw trade data from the underlying data provider
-            var tradeData = _tradeDataProvider.GetTradeData();
+            // Get the raw trade data from the underlying data provider asynchronously
+            var tradeData = await _tradeDataProvider.GetTradeData();
 
             // Convert each instance of "GBP" to "EUR"
             var adjustedTradeData = tradeData.Select(trade => trade.Replace("GBP", "EUR"));
