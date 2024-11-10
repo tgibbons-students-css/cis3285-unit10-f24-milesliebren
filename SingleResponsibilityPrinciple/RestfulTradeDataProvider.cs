@@ -1,8 +1,7 @@
 ﻿using SingleResponsibilityPrinciple.Contracts;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -10,9 +9,9 @@ namespace SingleResponsibilityPrinciple
 {
     public class RestfulTradeDataProvider : ITradeDataProvider
     {
-        string url;
-        ILogger logger;
-        HttpClient client = new HttpClient();
+        private readonly string url;
+        private readonly ILogger logger;
+        private readonly HttpClient client = new HttpClient();
 
         public RestfulTradeDataProvider(string url, ILogger logger)
         {
@@ -20,12 +19,13 @@ namespace SingleResponsibilityPrinciple
             this.logger = logger;
         }
 
-        async Task<List<string>> GetTradeAsync()
+        private async Task<List<string>> GetTradeAsync()
         {
             logger.LogInfo("Connecting to the Restful server using HTTP");
-            List<string> tradesString = null;
 
+            List<string> tradesString = new List<string>();
             HttpResponseMessage response = await client.GetAsync(url);
+
             if (response.IsSuccessStatusCode)
             {
                 // Read the content as a string and deserialize it into a List<string>
@@ -33,16 +33,15 @@ namespace SingleResponsibilityPrinciple
                 tradesString = JsonSerializer.Deserialize<List<string>>(content);
                 logger.LogInfo("Received trade strings of length = " + tradesString.Count);
             }
+
             return tradesString;
         }
 
-        public IEnumerable<string> GetTradeData()
+        public async Task<IEnumerable<string>> GetTradeData()
         {
-            Task<List<string>> task = Task.Run(() => GetTradeAsync());
-            task.Wait();
-
-            List<string> tradeList = task.Result;
-            return tradeList;
+            // Directly await GetTradeAsync, avoiding Task.Run
+            var trades = await GetTradeAsync();
+            return trades;
         }
     }
 }
