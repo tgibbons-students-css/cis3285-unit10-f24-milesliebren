@@ -13,7 +13,14 @@ namespace SingleResponsibilityPrinciple
             this.logger = logger;
         }
 
-        public IEnumerable<string> GetTradeData()
+        public Task<IEnumerable<string>> GetTradeData()
+        {
+            // Return synchronous result wrapped in a Task
+            return Task.FromResult(GetTradeDataSync());
+        }
+
+        //Synchronous method
+        public IEnumerable<string> GetTradeDataSync()
         {
             var tradeData = new List<string>();
             logger.LogInfo("Reading trades from file stream.");

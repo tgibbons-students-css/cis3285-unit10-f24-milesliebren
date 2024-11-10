@@ -16,8 +16,13 @@ namespace SingleResponsibilityPrinciple
             this.url = url;
             this.logger = logger;
         }
+        public Task<IEnumerable<string>> GetTradeData()
+        {
+            // Return synchronous result wrapped in a Task
+            return Task.FromResult(GetTradeDataSync());
+        }
 
-        public IEnumerable<string> GetTradeData()
+        public IEnumerable<string> GetTradeDataSync()
         {
             List<string> tradeData = new List<string>();
             logger.LogInfo("Reading trades from URL: " + url);
